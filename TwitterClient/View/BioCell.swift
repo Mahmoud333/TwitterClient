@@ -10,15 +10,19 @@ import UIKit
 
 class BioCell: UITableViewCell {
 
+    @IBOutlet weak var profileImage: MAImageV!
+    @IBOutlet weak var nameLbl: UILabel!
+    @IBOutlet weak var nicknameLbl: UILabel!
+    @IBOutlet weak var bioTextV: UITextView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    func configuerCell(follower: RealmFollowerr) {
+        nameLbl.text = follower.namee
+        nicknameLbl.text = "@\(follower.screen_name)"
+        bioTextV.text = follower.descriptionBio
+        profileImage.image = UIImage(data: follower.profile_image_url_Data!)
     }
-
 }

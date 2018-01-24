@@ -12,6 +12,9 @@
 		1E1BA6ED2017AE0300FEC31D /* ImageTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1BA6EB2017AE0200FEC31D /* ImageTextCell.swift */; };
 		1E1BA6EE2017AE0300FEC31D /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1BA6EC2017AE0300FEC31D /* TextCell.swift */; };
 		1E1BA6F42017F82000FEC31D /* UIView+Extn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1BA6F32017F82000FEC31D /* UIView+Extn.swift */; };
+		1E415E122018D3B20092A0B7 /* BioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E415E112018D3B20092A0B7 /* BioCell.swift */; };
+		1E415E142018FFD60092A0B7 /* UIViewController+Extn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E415E132018FFD60092A0B7 /* UIViewController+Extn.swift */; };
+		1E415E16201900D10092A0B7 /* MAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E415E15201900D10092A0B7 /* MAButton.swift */; };
 		1E95807F2016BEA50038F046 /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E95807E2016BEA50038F046 /* Connectivity.swift */; };
 		1E9580812016C0E00038F046 /* Realm+Extn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9580802016C0E00038F046 /* Realm+Extn.swift */; };
 		1EE9300C201680BD0051060D /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE9300B201680BD0051060D /* ProfileVC.swift */; };
@@ -46,6 +49,9 @@
 		1E1BA6EB2017AE0200FEC31D /* ImageTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTextCell.swift; sourceTree = "<group>"; };
 		1E1BA6EC2017AE0300FEC31D /* TextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
 		1E1BA6F32017F82000FEC31D /* UIView+Extn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extn.swift"; sourceTree = "<group>"; };
+		1E415E112018D3B20092A0B7 /* BioCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioCell.swift; sourceTree = "<group>"; };
+		1E415E132018FFD60092A0B7 /* UIViewController+Extn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extn.swift"; sourceTree = "<group>"; };
+		1E415E15201900D10092A0B7 /* MAButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAButton.swift; sourceTree = "<group>"; };
 		1E95807E2016BEA50038F046 /* Connectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		1E9580802016C0E00038F046 /* Realm+Extn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Extn.swift"; sourceTree = "<group>"; };
 		1EE9300B201680BD0051060D /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
@@ -115,7 +121,9 @@
 				1EF9053020151ACD00F6D763 /* FollowersCell.swift */,
 				1EE9300D201680ED0051060D /* MAImageV.swift */,
 				1E1BA6EB2017AE0200FEC31D /* ImageTextCell.swift */,
+				1E415E15201900D10092A0B7 /* MAButton.swift */,
 				1E1BA6EC2017AE0300FEC31D /* TextCell.swift */,
+				1E415E112018D3B20092A0B7 /* BioCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -164,6 +172,7 @@
 				1EF905182015045800F6D763 /* Info.plist */,
 				1EF9052C20150CE700F6D763 /* Constants.swift */,
 				1E95807E2016BEA50038F046 /* Connectivity.swift */,
+				1E415E132018FFD60092A0B7 /* UIViewController+Extn.swift */,
 				1E9580802016C0E00038F046 /* Realm+Extn.swift */,
 				1E1BA6F32017F82000FEC31D /* UIView+Extn.swift */,
 			);
@@ -403,6 +412,7 @@
 			files = (
 				1EF9050F2015045800F6D763 /* LoginVC.swift in Sources */,
 				1EF9053120151ACD00F6D763 /* FollowersCell.swift in Sources */,
+				1E415E122018D3B20092A0B7 /* BioCell.swift in Sources */,
 				1E95807F2016BEA50038F046 /* Connectivity.swift in Sources */,
 				1E1BA6EA2017A96100FEC31D /* Tweet.swift in Sources */,
 				1E1BA6ED2017AE0300FEC31D /* ImageTextCell.swift in Sources */,
@@ -415,7 +425,9 @@
 				1EF9052F201513D800F6D763 /* FollowersVC.swift in Sources */,
 				1E1BA6F42017F82000FEC31D /* UIView+Extn.swift in Sources */,
 				1EF9053520153DAA00F6D763 /* RealmFollower.swift in Sources */,
+				1E415E16201900D10092A0B7 /* MAButton.swift in Sources */,
 				1EF9052D20150CE700F6D763 /* Constants.swift in Sources */,
+				1E415E142018FFD60092A0B7 /* UIViewController+Extn.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

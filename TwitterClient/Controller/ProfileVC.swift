@@ -8,14 +8,15 @@
 
 import UIKit
 import Alamofire
+import RealmSwift
 
 let offset_HeaderStop:CGFloat = 40.0 // At this offset the Header stops its transformations
 let offset_B_LabelHeader:CGFloat = 95.0 // At this offset the Black label reaches the Header
-let distance_W_LabelHeader:CGFloat = 35.0 // The distance between the bottom of the Header and the top of the White Label
+let distance_W_LabelHeader:CGFloat = 45.0 // The distance between the bottom of the Header and the top of the White Label, was 35.0 
 
 class ProfileVC: UIViewController {
     
-
+    
     
     @IBOutlet weak var nameHeaderLbl: UILabel!
     @IBOutlet weak var bioView: UIView!
@@ -32,6 +33,7 @@ class ProfileVC: UIViewController {
     @IBOutlet var headerImageView:UIImageView!
     @IBOutlet var headerBlurImageView:UIImageView!
     
+    var realm: Realm?
     
     var profile: RealmFollowerr?
     var tweetss = [RealmTweet]()
@@ -40,7 +42,7 @@ class ProfileVC: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self; tableView.dataSource = self
         
-
+        //Setting Things
         
         // Header - Image
         //Add Image to the header
@@ -68,7 +70,45 @@ class ProfileVC: UIViewController {
         screenNameLbl.text = profile?.screen_name
         descriptionBioTV.text = profile?.descriptionBio
         
-        fetchTweetsForThatUser()
+        
+        //Realm Part
+        do {
+            realm = try Realm()
+        } catch {
+            debugPrint("Realm catch error: \(error.localizedDescription)")
+        }
+        
+        
+        //1- fetch all RealmTweets
+        //2- filter them the ones who have same screenName as profile
+        /*tweetss = (realm?.objects(RealmTweet.self).toArray(ofType: RealmTweet.self) as! [RealmTweet]).filter({ (realmTweet) -> Bool in
+            print("\(realmTweet.screen_name) == \(profile?.screen_name)")
+            return realmTweet.screen_name == profile?.screen_name
+        })*/
+        tweetss = (realm?.objects(RealmTweet.self).toTweetsArray().filter({ (realmTweet) -> Bool in
+            print("Realm: \(realmTweet.screen_name) == \(profile?.screen_name)")
+            return realmTweet.screen_name == profile?.screen_name
+        }))!
+        print("realm tweets: \(tweetss)")
+        
+        if !Connectivity.isConnectedToInternet() {
+            
+            tableView.reloadData()
+            
+            print("Realm No Internet Connection")
+        } else {
+            do {
+                
+                //try realm?.write {
+                //    realm?.deleteAll()
+                //}
+            }   catch {
+                debugPrint("Realm error deleting273: \(error.localizedDescription)")
+            }
+            
+            fetchTweetsForThatUser()
+        }
+
     }
     
     func initTheVC(realmFollower: RealmFollowerr) {
@@ -125,15 +165,22 @@ class ProfileVC: UIViewController {
                                                 tweet.image4Data = response5.data!
                                             }
                                             
+                                            //add it in our array
                                             self.tweetss.append(tweet)
+                                            
+                                            do {
+                                                
+                                                try self.realm?.write {
+                                                    //save the tweet and update it if its alrady existed
+                                                    self.realm?.create(RealmTweet.self, value: tweet, update: true)
+                                                }
+                                            }   catch {
+                                                debugPrint("Realm error deleting436: \(error.localizedDescription)")
+                                            }
                                             
                                             print(self.tweetss)
                                             
-                                            DispatchQueue.main.async {
-                                                
-                                                
-                                                self.tableView.reloadData()
-                                            }
+                                            self.tableView.reloadData()
                                         })
                                     })
                                 })
@@ -192,7 +239,21 @@ class ProfileVC: UIViewController {
                                                 tweet.image4Data = response5.data!
                                             }
                                             
+        
+                                            //Add tweet to our array
                                             self.tweetss.append(tweet)
+                                            
+                                            
+                                            do {
+                                                
+                                                try self.realm?.write {
+                                                    //save the tweet and update it if its alrady existed
+                                                    self.realm?.create(RealmTweet.self, value: tweet, update: true)
+                                                }
+                                            }   catch {
+                                                debugPrint("Realm error deleting436: \(error.localizedDescription)")
+                                            }
+                                            
                                             
                                             print(self.tweetss)
                                             self.tableView.reloadData()
@@ -203,76 +264,89 @@ class ProfileVC: UIViewController {
                         })
                     }
                 }
-                
             }
         }
     }
+    
+    @IBAction func dismissTapped(_ sender: Any) {
+        dismissDetail()
+    }
+    
 }
 
 extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
-        if tweetss[indexPath.row].image1.characters.count == 0 {
+        if indexPath.row == 0 {
             
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "TextCell") as? TextCell {
-                let tweeta = tweetss[indexPath.row]
-                
-                
-                cell.ProfileImageV.image = UIImage(data:  tweeta.profile_image_url_httpsData ?? Data())
-                
-                cell.descriptionLbl.text = tweeta.text
-                cell.screenNameLbl.text = "@\(tweeta.screen_name)"
-                cell.nicknameLabel.text = tweeta.name
-                cell.dateLbl.text = tweeta.created_at
-                
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "BioCell") as? BioCell {
+                cell.configuerCell(follower: profile!)
                 return cell
             }
             
         } else {
             
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "ImageTextCell") as? ImageTextCell {
+            if tweetss[indexPath.row - 1].image1.characters.count == 0 {
                 
-                let tweeta = tweetss[indexPath.row]
-                
-                cell.descriptionLbl.text = tweeta.text
-                
-                cell.ProfileImageV.image = UIImage(data: tweeta.profile_image_url_httpsData ?? Data())
-                
-                
-                cell.descriptionLbl.text = tweeta.text
-                cell.screenNameLbl.text = "@\(tweeta.screen_name)"
-                cell.nicknameLabel.text = tweeta.name
-                cell.dateLbl.text = tweeta.created_at
-                
-                //Attached Images
-                cell.firstImageV.image = UIImage(data: tweeta.image1Data ?? Data())
-                
-                if tweeta.image2Data != nil {  //.image2Data != nil {
+                if let cell = tableView.dequeueReusableCell(withIdentifier: "TextCell") as? TextCell {
+                    let tweeta = tweetss[indexPath.row - 1]
                     
-                    cell.secondImageV.isHidden = false
-                    cell.secondImageV.image = UIImage(data: tweeta.image2Data!)
-                } else { cell.secondImageV.isHidden = true}
-                
-                if tweeta.image3Data != nil {
                     
-                    cell.thirdImageV.isHidden = false
-                    cell.thirdImageV.image = UIImage(data: tweeta.image3Data!)
-                } else { cell.thirdImageV.isHidden = true }
-                
-                if tweeta.image4Data != nil {
+                    cell.ProfileImageV.image = UIImage(data:  tweeta.profile_image_url_httpsData ?? Data())
                     
-                    cell.fourthImageV.isHidden = false
-                    cell.fourthImageV.image = UIImage(data: tweeta.image4Data!)
-                } else { cell.fourthImageV.isHidden = true}
-                
-                if tweeta.image2Data == nil  && tweeta.image3Data == nil {
-                    cell.secondStackView.isHidden = true
-                } else {
-                    cell.secondStackView.isHidden = false
+                    cell.descriptionLbl.text = tweeta.text
+                    cell.screenNameLbl.text = "@\(tweeta.screen_name)"
+                    cell.nicknameLabel.text = tweeta.name
+                    cell.dateLbl.text = tweeta.created_at
+                    
+                    return cell
                 }
                 
-                return cell
+            } else {
+                
+                if let cell = tableView.dequeueReusableCell(withIdentifier: "ImageTextCell") as? ImageTextCell {
+                    
+                    let tweeta = tweetss[indexPath.row - 1]
+                    
+                    cell.descriptionLbl.text = tweeta.text
+                    
+                    cell.ProfileImageV.image = UIImage(data: tweeta.profile_image_url_httpsData ?? Data())
+                    
+                    
+                    cell.descriptionLbl.text = tweeta.text
+                    cell.screenNameLbl.text = "@\(tweeta.screen_name)"
+                    cell.nicknameLabel.text = tweeta.name
+                    cell.dateLbl.text = tweeta.created_at
+                    
+                    //Attached Images
+                    cell.firstImageV.image = UIImage(data: tweeta.image1Data ?? Data())
+                    
+                    if tweeta.image2Data != nil {  //.image2Data != nil {
+                        
+                        cell.secondImageV.isHidden = false
+                        cell.secondImageV.image = UIImage(data: tweeta.image2Data!)
+                    } else { cell.secondImageV.isHidden = true}
+                    
+                    if tweeta.image3Data != nil {
+                        
+                        cell.thirdImageV.isHidden = false
+                        cell.thirdImageV.image = UIImage(data: tweeta.image3Data!)
+                    } else { cell.thirdImageV.isHidden = true }
+                    
+                    if tweeta.image4Data != nil {
+                        
+                        cell.fourthImageV.isHidden = false
+                        cell.fourthImageV.image = UIImage(data: tweeta.image4Data!)
+                    } else { cell.fourthImageV.isHidden = true}
+                    
+                    if tweeta.image2Data == nil  && tweeta.image3Data == nil {
+                        cell.secondStackView.isHidden = true
+                    } else {
+                        cell.secondStackView.isHidden = false
+                    }
+                    
+                    return cell
+                }
             }
         }
         
@@ -284,7 +358,7 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tweetss.count
+        return 1 + tweetss.count
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -292,12 +366,14 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
         let offset = scrollView.contentOffset.y
         var avatarTransform = CATransform3DIdentity
         var headerTransform = CATransform3DIdentity
-
+        
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? BioCell else {return}
+        let profileIVV = cell.profileImage
         
         // PULL DOWN -----------------
         
         if offset < 0 {
-            print("offset < 0")
+            print("offset < 0") //Scrolling up the tableview
             //if scrollView.isEqual(tableView) {
             //    if offset <= 40.0 {tableView.isScrollEnabled = false; }
             //}
@@ -308,21 +384,20 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
             headerTransform = CATransform3DTranslate(headerTransform, 0, headerSizevariation, 0)
             headerTransform = CATransform3DScale(headerTransform, 1.0 + headerScaleFactor, 1.0 + headerScaleFactor, 0)
             
-
+            
             headerIV.layer.transform = headerTransform
-            
 
-            /*UIView.animate(withDuration: 2.0, animations: {
-                self.tableView.transform = CGAffineTransform(translationX: 0, y: 300)
-                self.bioView.transform = CGAffineTransform(translationX: 0, y: 300)
-            })*/
-            
         }
             
             // SCROLL UP/DOWN ------------
             
         else {
-            print("else offset < 0")
+            
+            if tableView.frame.origin.y > 60 {
+                //tableView.frame.origin.y -= 2.5
+            }
+            
+            print("else offset < 0") //Scrolling down the tableview
             print(offset)
             //if offset >= 230.0 { tableView.isScrollEnabled = true; }
             
@@ -341,27 +416,21 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
             
             // Avatar -----------
             
-            let avatarScaleFactor = (min(offset_HeaderStop, offset)) / profileIV.bounds.height / 1.4 // Slow down the animation
-            let avatarSizeVariation = ((profileIV.bounds.height * (1.0 + avatarScaleFactor)) - profileIV.bounds.height) / 2.0
+            let avatarScaleFactor = (min(offset_HeaderStop, offset)) / (profileIVV?.bounds.height)! / 1.4 // Slow down the animation
+            let avatarSizeVariation = ((profileIV.bounds.height * (1.0 + avatarScaleFactor)) - (profileIVV?.bounds.height)!) / 2.0
             avatarTransform = CATransform3DTranslate(avatarTransform, 0, avatarSizeVariation, 0)
             avatarTransform = CATransform3DScale(avatarTransform, 1.0 - avatarScaleFactor, 1.0 - avatarScaleFactor, 0)
             
-            
-            
 
-            /*UIView.animate(withDuration: 2.0, animations: {
-                self.tableView.transform = CGAffineTransform(translationX: 0, y: -300)
-                self.bioView.transform = CGAffineTransform(translationX: 0, y: -300)
-            })*/
             
             if offset <= offset_HeaderStop {
                 
-                if profileIV.layer.zPosition < headerIV.layer.zPosition{
+                if (profileIVV?.layer.zPosition)! < headerIV.layer.zPosition{
                     headerIV.layer.zPosition = 0
                 }
                 
             }else {
-                if profileIV.layer.zPosition >= headerIV.layer.zPosition{
+                if (profileIVV?.layer.zPosition)! >= headerIV.layer.zPosition{
                     headerIV.layer.zPosition = 2
                 }
             }
@@ -370,17 +439,9 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
         // Apply Transformations
         
         headerIV.layer.transform = headerTransform
-        profileIV.layer.transform = avatarTransform
-
-        bioView.isHidden = true
-        
-        //bioTopConstraint.constant = 0
-        //tableVTopConstraint.constant = 0
-        UIView.animate(withDuration: 0.4, animations: {
-                self.view.layoutIfNeeded()
-         })
+        profileIVV?.layer.transform = avatarTransform
         
     }
     
-
+    
 }

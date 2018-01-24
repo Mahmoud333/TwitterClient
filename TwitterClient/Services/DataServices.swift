@@ -36,7 +36,7 @@ class DataServices {
         //"include_email": "true", "skip_status": "true"
         twitterClient.sendTwitterRequest(request, completion: { (response, data, connectionError) in
             
-            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription) }
+            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription); return }
             
             print("data: \(data)")
             let json2 = JSON(data ?? Data())
@@ -97,7 +97,7 @@ class DataServices {
         
         twitterClient.sendTwitterRequest(request, completion: { (response, data, connectionError) in
             
-            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription) }
+            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription); return }
 
             
             print("data: \(data)")
@@ -155,7 +155,7 @@ class DataServices {
         
         twitterClient.sendTwitterRequest(request, completion: { (response, data, connectionError) in
             
-            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription) }
+            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription); return }
             
             
             print("data: \(data)")
@@ -186,7 +186,7 @@ class DataServices {
 
         twitterClient.sendTwitterRequest(request, completion: { (response, data, connectionError) in
             
-            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription) }
+            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription); return }
             
             print("data: \(data)")
             let json = JSON(data!)
@@ -241,7 +241,7 @@ class DataServices {
         
         twitterClient.sendTwitterRequest(request, completion: { (response, data, connectionError) in
             
-            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription) }
+            if connectionError != nil || data == nil { completion(false, nil); print(connectionError?.localizedDescription); print(response.debugDescription); return }
             
             print("data: \(data)")
             let json = JSON(data!)

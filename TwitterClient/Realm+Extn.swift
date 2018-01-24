@@ -29,6 +29,15 @@ extension Results {
         }
         return array
     }
+    
+    func toTweetsArray() -> [RealmTweet] {
+        var array = [RealmTweet]()
+        
+        for i in 0..<count {
+            array.append(self[i] as! RealmTweet)
+        }
+        return array
+    }
 }
 
 

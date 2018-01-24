@@ -23,5 +23,9 @@ class TextCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
     }
+    
+    override func prepareForReuse() {
+        
+    }
 
 }
