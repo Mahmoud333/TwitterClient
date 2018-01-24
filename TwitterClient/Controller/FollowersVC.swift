@@ -40,24 +40,16 @@ class FollowersVC: UIViewController {
             
             print("Realm No Internet Connection")
         } else {
-            do {
-                
-                //try realm?.write {
-                //    realm?.deleteAll()
-                //}
-            }   catch {
-                debugPrint("Realm error deleting273: \(error.localizedDescription)")
-            }
             
-            fetchFollowers()
+            fetchFollowers(nextCursor: false)
         }
     }
     
-    func fetchFollowers() {
-        DataServices.instace.fetchFollowers { (success, fetchedRealmFollowers) in
+    func fetchFollowers(nextCursor: Bool) {
+        DataServices.instace.fetchFollowers(nextCursor: nextCursor) { (success, fetchedRealmFollowers) in
             if success {
                 
-                self.followerss = fetchedRealmFollowers!
+                self.followerss += fetchedRealmFollowers!
                 self.tableView.reloadData()
                 
                 
@@ -83,34 +75,6 @@ class FollowersVC: UIViewController {
         }
     }
     
-    func fetchAnotherFollowers() {
-        DataServices.instace.fetchAnotherFollowers { (success, fetchedRealmFollowers) in
-            if success {
-                self.followerss += fetchedRealmFollowers!
-                self.tableView.reloadData()
-                
-                for tweet in fetchedRealmFollowers! {
-                    
-                    //save it
-                    do {
-                        
-                        try! self.realm?.write {
-                            
-                            //just save it to realm
-                            //self.realm?.add(fetchedRealmFollowers!)
-                            
-                            //save it and update it if its alrady existed
-                            //self.realm?.create(RealmFollowerr.self, value: fetchedRealmFollowers!, update: true)
-                            self.realm?.create(RealmFollowerr.self, value: tweet, update: true)
-                            
-                        }
-                    }   catch {
-                        debugPrint("Realm error saving123: \(error.localizedDescription)")
-                    }
-                }
-            }
-        }
-    }
     
 }
 
@@ -164,7 +128,7 @@ extension FollowersVC : UITableViewDelegate, UITableViewDataSource {
             
             
             if Connectivity.isConnectedToInternet() {
-                fetchAnotherFollowers()
+                fetchFollowers(nextCursor: true)
             } else {
                 //Do Nothing
             }

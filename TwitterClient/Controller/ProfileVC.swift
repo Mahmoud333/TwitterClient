@@ -81,10 +81,7 @@ class ProfileVC: UIViewController {
         
         //1- fetch all RealmTweets
         //2- filter them the ones who have same screenName as profile
-        /*tweetss = (realm?.objects(RealmTweet.self).toArray(ofType: RealmTweet.self) as! [RealmTweet]).filter({ (realmTweet) -> Bool in
-            print("\(realmTweet.screen_name) == \(profile?.screen_name)")
-            return realmTweet.screen_name == profile?.screen_name
-        })*/
+
         tweetss = (realm?.objects(RealmTweet.self).toTweetsArray().filter({ (realmTweet) -> Bool in
             print("Realm: \(realmTweet.screen_name) == \(profile?.screen_name)")
             return realmTweet.screen_name == profile?.screen_name
@@ -97,14 +94,6 @@ class ProfileVC: UIViewController {
             
             print("Realm No Internet Connection")
         } else {
-            do {
-                
-                //try realm?.write {
-                //    realm?.deleteAll()
-                //}
-            }   catch {
-                debugPrint("Realm error deleting273: \(error.localizedDescription)")
-            }
             
             fetchTweetsForThatUser()
         }
@@ -187,83 +176,6 @@ class ProfileVC: UIViewController {
                             })
                         })
                     }}
-            }
-        }
-    }
-    
-    
-    func fetchAnotherTweets(maxId: Int, sinceID: Int) {
-        // oldest |- - - - - - since_id[. . . . . . . . . . . . . . .]max_id - - - - - -| latest
-        
-        //max_id: Returns results with an ID less than (that is, older than) or equal to the specified ID.
-        //since_id: Returns results with an ID greater than (that is, more recent than) the specified ID. There are limits to the number of Tweets that can be accessed through the API. If the limit of Tweets has occured since the since_id, the since_id will be forced to the oldest ID available.
-        DataServices.instace.fetchAnotherUserTweets(screenName: profile!.screen_name, max_id: maxId, sinceId: sinceID) { (success, fetchedRealmTweets) in
-            
-            
-            if success {
-                
-                for tweet in fetchedRealmTweets! {
-                    let profileImage = tweet.profile_image_url_https.replacingOccurrences(of: "\\", with: "")
-                    let imageUrl1 = tweet.image1.replacingOccurrences(of: "\\", with: "")
-                    let imageUrl2 = tweet.image2.replacingOccurrences(of: "\\", with: "")
-                    let imageUrl3 = tweet.image3.replacingOccurrences(of: "\\", with: "")
-                    let imageUrl4 = tweet.image4.replacingOccurrences(of: "\\", with: "")
-                    
-                    if !self.tweetss.contains(tweet) {
-                        
-                        //Profile
-                        Alamofire.request(profileImage).responseData(completionHandler: { (response1) in
-                            tweet.profile_image_url_httpsData = response1.data!
-                            
-                            //Attached 1
-                            Alamofire.request(imageUrl1).responseData(completionHandler: { (response2) in
-                                if response2.data! != Data() {
-                                    tweet.image1Data = response2.data!
-                                }
-                                
-                                //Attached 2
-                                Alamofire.request(imageUrl2).responseData(completionHandler: { (response3) in
-                                    if response3.data! != Data() {
-                                        tweet.image2Data = response3.data!
-                                    }
-                                    
-                                    //Attached 3
-                                    Alamofire.request(imageUrl3).responseData(completionHandler: { (response4) in
-                                        if response4.data! != Data() {
-                                            tweet.image3Data = response4.data!
-                                        }
-                                        
-                                        //Attached 4
-                                        Alamofire.request(imageUrl4).responseData(completionHandler: { (response5) in
-                                            if response5.data! != Data() {
-                                                tweet.image4Data = response5.data!
-                                            }
-                                            
-        
-                                            //Add tweet to our array
-                                            self.tweetss.append(tweet)
-                                            
-                                            
-                                            do {
-                                                
-                                                try self.realm?.write {
-                                                    //save the tweet and update it if its alrady existed
-                                                    self.realm?.create(RealmTweet.self, value: tweet, update: true)
-                                                }
-                                            }   catch {
-                                                debugPrint("Realm error deleting436: \(error.localizedDescription)")
-                                            }
-                                            
-                                            
-                                            print(self.tweetss)
-                                            self.tableView.reloadData()
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    }
-                }
             }
         }
     }
@@ -374,9 +286,6 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
         
         if offset < 0 {
             print("offset < 0") //Scrolling up the tableview
-            //if scrollView.isEqual(tableView) {
-            //    if offset <= 40.0 {tableView.isScrollEnabled = false; }
-            //}
             
             //for header
             let headerScaleFactor:CGFloat = -(offset) / headerIV.bounds.height
@@ -393,13 +302,8 @@ extension ProfileVC: UITableViewDelegate, UITableViewDataSource {
             
         else {
             
-            if tableView.frame.origin.y > 60 {
-                //tableView.frame.origin.y -= 2.5
-            }
-            
             print("else offset < 0") //Scrolling down the tableview
             print(offset)
-            //if offset >= 230.0 { tableView.isScrollEnabled = true; }
             
             // Header -----------
             

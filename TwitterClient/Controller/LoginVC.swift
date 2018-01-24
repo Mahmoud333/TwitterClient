@@ -17,12 +17,13 @@ class LoginVC: UIViewController {
     
     let userDefault = UserDefaults.standard
     
+    var loginButton: TWTRLogInButton?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-        let loginButton = TWTRLogInButton { (session, error) in
+        loginButton = TWTRLogInButton { (session, error) in
             
             if session != nil {
                 
@@ -37,15 +38,18 @@ class LoginVC: UIViewController {
         }
         
         
-        loginButton.center = CGPoint(x: view.bounds.width/2, y: self.view.frame.height*0.85)
-        view.addSubview(loginButton)
+        loginButton?.center = CGPoint(x: view.bounds.width/2, y: self.view.frame.height*0.85)
+        view.addSubview(loginButton!)
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        
         if TWTRTwitter.sharedInstance().sessionStore.session()?.userID != nil, userDefault.string(forKey: "SCREEN_NAME") != nil {
+            loginButton?.isHidden = true
+            
             print("Signed in as \(TWTRTwitter.sharedInstance().sessionStore.session()?.userID)")
             
             loggedINAnimation()
@@ -75,7 +79,7 @@ class LoginVC: UIViewController {
                 
                 UIView.animate(withDuration: 1.0, delay: 0, options: [.curveEaseInOut], animations: {
                     
-                    self.twitterLogoIV.transform = CGAffineTransform(scaleX: 15.0, y: 15.0)
+                    self.twitterLogoIV.transform = CGAffineTransform(scaleX: 30.0, y: 30.0)
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         //Go to Next VC

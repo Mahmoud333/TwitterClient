@@ -138,6 +138,25 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		1E415E17201924C60092A0B7 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				1E415E132018FFD60092A0B7 /* UIViewController+Extn.swift */,
+				1E9580802016C0E00038F046 /* Realm+Extn.swift */,
+				1E1BA6F32017F82000FEC31D /* UIView+Extn.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		1E415E18201924F50092A0B7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				1EF9052C20150CE700F6D763 /* Constants.swift */,
+				1E95807E2016BEA50038F046 /* Connectivity.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		1EF905002015045800F6D763 = {
 			isa = PBXGroup;
 			children = (
@@ -161,20 +180,17 @@
 		1EF9050B2015045800F6D763 /* TwitterClient */ = {
 			isa = PBXGroup;
 			children = (
+				1E415E18201924F50092A0B7 /* Utilities */,
+				1E415E17201924C60092A0B7 /* Extension */,
 				1E1BA6F22017AE1800FEC31D /* Controller */,
 				1E1BA6F12017AE1400FEC31D /* View */,
 				1E1BA6F02017AE0F00FEC31D /* Model */,
 				1E1BA6EF2017AE0700FEC31D /* Services */,
 				1EF9050C2015045800F6D763 /* AppDelegate.swift */,
 				1EF905102015045800F6D763 /* Main.storyboard */,
-				1EF905132015045800F6D763 /* Assets.xcassets */,
 				1EF905152015045800F6D763 /* LaunchScreen.storyboard */,
+				1EF905132015045800F6D763 /* Assets.xcassets */,
 				1EF905182015045800F6D763 /* Info.plist */,
-				1EF9052C20150CE700F6D763 /* Constants.swift */,
-				1E95807E2016BEA50038F046 /* Connectivity.swift */,
-				1E415E132018FFD60092A0B7 /* UIViewController+Extn.swift */,
-				1E9580802016C0E00038F046 /* Realm+Extn.swift */,
-				1E1BA6F32017F82000FEC31D /* UIView+Extn.swift */,
 			);
 			path = TwitterClient;
 			sourceTree = "<group>";
